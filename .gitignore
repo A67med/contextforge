@@ -1,0 +1,49 @@
+# Rust
+/target/
+**/target/
+*.pdb
+
+# Node / frontend
+node_modules/
+apps/desktop/dist/
+apps/desktop/.vite/
+*.tsbuildinfo
+coverage/
+
+# Tauri generated / sidecar build outputs
+apps/desktop/src-tauri/gen/schemas/
+apps/desktop/src-tauri/binaries/
+apps/desktop/src-tauri/target/
+
+# Local data — never commit memory databases, logs, or backups
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+/.contextforge/
+/test-data/
+/tmp/
+*.log
+
+# Secrets / environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Editors / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Agent-local config that may contain machine-specific paths
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

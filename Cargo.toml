@@ -1,0 +1,48 @@
+[workspace]
+resolver = "3"
+members = [
+    "crates/core",
+]
+default-members = ["crates/core"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+repository = "https://github.com/A67med/contextforge"
+homepage = "https://github.com/A67med/contextforge"
+authors = ["ContextForge contributors"]
+
+[workspace.dependencies]
+contextforge-core = { path = "crates/core" }
+contextforge-integrations = { path = "crates/integrations" }
+contextforge-mcp = { path = "crates/mcp" }
+
+anyhow = "1.0"
+thiserror = "2.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["preserve_order"] }
+rusqlite = { version = "0.41", features = ["bundled", "backup"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std", "serde"] }
+ulid = "3.0"
+regex = "1.11"
+sha2 = "0.11"
+dirs = "7.0"
+dunce = "1.0"
+globset = "0.4"
+toml_edit = "0.25"
+clap = { version = "4.6", features = ["derive", "env"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+tracing-appender = "0.2"
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "io-std", "time", "process", "sync"] }
+rmcp = { version = "3.9", default-features = false }
+schemars = "1.0"
+tempfile = "3.20"
+
+[profile.release]
+lto = "thin"
+codegen-units = 4
+strip = "debuginfo"
+panic = "unwind"

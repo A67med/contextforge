@@ -1,0 +1,32 @@
+[package]
+name = "contextforge-core"
+description = "ContextForge memory engine: storage, search, provenance, freshness, context and handoff generation"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[features]
+default = []
+# Derive JSON schemas for public enums (used by the MCP server's tool schemas).
+schema = ["dep:schemars"]
+
+[dependencies]
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rusqlite.workspace = true
+chrono.workspace = true
+ulid.workspace = true
+regex.workspace = true
+sha2.workspace = true
+dirs.workspace = true
+dunce.workspace = true
+globset.workspace = true
+tracing.workspace = true
+schemars = { workspace = true, optional = true }
+
+[dev-dependencies]
+tempfile.workspace = true
