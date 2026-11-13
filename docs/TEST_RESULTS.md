@@ -13,6 +13,10 @@ Antigravity desktop 2.31.0.
 | mcp unit | 2 | pass |
 | cli: MCP protocol (real rmcp client ↔ built `contextforge mcp`) | 3 | pass |
 | cli: end-to-end cross-agent flow, hostile payloads, hook latency | 3 | pass |
+| integrations: uninstall on a clean machine creates nothing | 1 | pass |
+| **Total Rust** | **123** | **pass** |
+| frontend unit (vitest) | 6 | pass |
+| UI end-to-end against the real release app (Playwright over WebView2 CDP) | 14 | pass |
 
 `cargo clippy --workspace --all-targets -- -D warnings`: clean. `cargo fmt --check`: clean.
 
@@ -34,3 +38,26 @@ All runs are isolated (throwaway repo and data dir, per-run config); the user's 
 
 ### Measured hook latency (debug build, warm)
 Antigravity live run: SessionStart 171–228 ms (includes git status + freshness), PreInvocation 7–57 ms, Stop 200–500 ms.
+
+## UI end-to-end (apps/desktop/e2e/run.mjs) — 2026-11-13
+Real release build of the desktop app with seeded data (`scripts/seed-demo.ps1`, produced through the real hook and MCP
+code paths). 14/14 checks pass, both against `target/release` and against the **installed** app: overview with real
+data, project registration details, agent-context preview, memory search and provenance, stale-memory reasons,
+create/pin/delete memory, session timeline for all three agents, handoff generation, integration detection, install
+plan preview (no write), settings persistence, command palette, light theme, no console errors.
+
+Bug found by the UI tests and fixed: toggle switch knobs were rendered outside their track.
+
+## Installer (NSIS, per-user) — 2026-11-13
+* `scripts/build-installer.ps1` → `ContextForge_0.1.0_x64-setup.exe` (7.3 MB), unsigned.
+* Silent install (`/S`): exit 0; `contextforge-desktop.exe`, `contextforge.exe` (sidecar) and `uninstall.exe` installed;
+  Start Menu shortcut and uninstall entry created; installed CLI `doctor` passes (MCP handshake, three hook commands).
+* Installed app passes the 14 UI checks; its integration plans reference the installed `contextforge.exe`.
+* Silent uninstall: binaries, shortcut and uninstall entry removed; `contextforge.db` and logs preserved.
+* Caveat: this test ran inside the Claude desktop app's MSIX container, so `%LOCALAPPDATA%` was virtualized to the
+  package's `LocalCache`. A normal user install goes to the real `%LOCALAPPDATA%\ContextForge`.
+
+## Measured performance (release build, Windows 11)
+* Hook process end-to-end (spawn → output) for an unregistered folder: 51–62 ms (`contextforge doctor`).
+* Antigravity live session (debug build): SessionStart 171–228 ms including `git status` + freshness check.
+* Startup brief for the demo project: 7 memories, ~433 tokens.
