@@ -1,0 +1,28 @@
+[package]
+name = "contextforge-desktop"
+description = "ContextForge desktop application"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lib]
+name = "contextforge_desktop_lib"
+crate-type = ["rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2.7", features = [] }
+
+[dependencies]
+contextforge-core.workspace = true
+contextforge-integrations.workspace = true
+tauri = { version = "2.12", features = [] }
+tauri-plugin-dialog = "2.8"
+tauri-plugin-opener = "2.7"
+serde.workspace = true
+serde_json.workspace = true
+chrono.workspace = true
+dunce.workspace = true
+tracing.workspace = true

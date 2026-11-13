@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <rect width="1024" height="1024" rx="224" fill="#111317"/>
+  <rect x="24" y="24" width="976" height="976" rx="204" fill="none" stroke="#2a2d34" stroke-width="8"/>
+  <!-- three agent streams converging into one memory -->
+  <path d="M248 300 C 420 300, 440 512, 600 512" fill="none" stroke="#ff6a2b" stroke-width="56" stroke-linecap="round"/>
+  <path d="M248 512 L 600 512" fill="none" stroke="#ffb27d" stroke-width="56" stroke-linecap="round"/>
+  <path d="M248 724 C 420 724, 440 512, 600 512" fill="none" stroke="#ff6a2b" stroke-width="56" stroke-linecap="round"/>
+  <circle cx="248" cy="300" r="44" fill="#e9ebf0"/>
+  <circle cx="248" cy="512" r="44" fill="#e9ebf0"/>
+  <circle cx="248" cy="724" r="44" fill="#e9ebf0"/>
+  <circle cx="680" cy="512" r="132" fill="#ff6a2b"/>
+  <circle cx="680" cy="512" r="64" fill="#111317"/>
+</svg>

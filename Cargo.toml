@@ -5,6 +5,7 @@ members = [
     "crates/integrations",
     "crates/mcp",
     "crates/cli",
+    "apps/desktop/src-tauri",
 ]
 default-members = ["crates/core", "crates/integrations", "crates/mcp", "crates/cli"]
 

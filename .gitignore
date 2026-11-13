@@ -47,3 +47,7 @@ Thumbs.db
 # Agent-local config that may contain machine-specific paths
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
+
+# UI test artifacts
+apps/desktop/e2e/failures/
+apps/desktop/e2e/screenshots/
