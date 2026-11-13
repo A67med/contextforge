@@ -43,14 +43,14 @@ pub fn run(mut cmd: Command, stdin: Option<&[u8]>, timeout: Duration, max_output
     let program = format!("{:?}", cmd.get_program());
     let mut child = cmd.spawn().map_err(|e| Error::Io(std::io::Error::new(e.kind(), format!("failed to start {program}: {e}"))))?;
 
-    if let Some(input) = stdin {
-        if let Some(mut pipe) = child.stdin.take() {
-            let data = input.to_vec();
-            // Write on a thread so a child that does not read stdin cannot deadlock us.
-            std::thread::spawn(move || {
-                let _ = pipe.write_all(&data);
-            });
-        }
+    if let Some(input) = stdin
+        && let Some(mut pipe) = child.stdin.take()
+    {
+        let data = input.to_vec();
+        // Write on a thread so a child that does not read stdin cannot deadlock us.
+        std::thread::spawn(move || {
+            let _ = pipe.write_all(&data);
+        });
     }
 
     let out_handle = spawn_reader(child.stdout.take(), max_output);

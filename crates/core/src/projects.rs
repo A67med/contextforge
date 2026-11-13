@@ -108,10 +108,10 @@ fn is_too_broad(path: &Path) -> bool {
     if path.parent().is_none() {
         return true; // filesystem root such as C:\ or /
     }
-    if let Some(home) = dirs::home_dir() {
-        if path_key(&canonical(&home)) == path_key(path) {
-            return true;
-        }
+    if let Some(home) = dirs::home_dir()
+        && path_key(&canonical(&home)) == path_key(path)
+    {
+        return true;
     }
     false
 }

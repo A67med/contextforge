@@ -249,10 +249,10 @@ pub fn renames_since(root: &Path, commit: &str) -> Result<Vec<(String, String)>>
     let mut toks = raw.split('\0').filter(|t| !t.is_empty());
     let mut renames = Vec::new();
     while let Some(status) = toks.next() {
-        if status.starts_with('R') {
-            if let (Some(old), Some(new)) = (toks.next(), toks.next()) {
-                renames.push((old.to_string(), new.to_string()));
-            }
+        if status.starts_with('R')
+            && let (Some(old), Some(new)) = (toks.next(), toks.next())
+        {
+            renames.push((old.to_string(), new.to_string()));
         }
     }
     Ok(renames)
@@ -317,10 +317,10 @@ pub fn worktrees(root: &Path) -> Vec<Worktree> {
             if let Some(w) = cur.as_mut() {
                 w.head = Some(h.to_string());
             }
-        } else if let Some(b) = line.strip_prefix("branch ") {
-            if let Some(w) = cur.as_mut() {
-                w.branch = Some(b.trim_start_matches("refs/heads/").to_string());
-            }
+        } else if let Some(b) = line.strip_prefix("branch ")
+            && let Some(w) = cur.as_mut()
+        {
+            w.branch = Some(b.trim_start_matches("refs/heads/").to_string());
         }
     }
     if let Some(w) = cur {
