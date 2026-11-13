@@ -68,3 +68,9 @@ Bug found by the UI tests and fixed: toggle switch knobs were rendered outside t
   Now: **0 vulnerabilities**, 5 informational warnings (unmaintained/unsound) in Linux-only GTK/D-Bus crates
   pulled in by Tauri (`glib`, `zbus_names`, `zvariant*`, `proc-macro-error`) that are not compiled for Windows.
 * `npm audit --omit=dev --audit-level=high`: passes in CI.
+
+## v0.1.0 release artifact — 2026-11-13
+Built by the Release workflow from tag `v0.1.0` on a clean `windows-latest` runner (tests run before packaging).
+`ContextForge_0.1.0_x64-setup.exe` SHA-256 `b49b3f48c8ab7e35bd23ef6bfaf89cf1bac46dadd326d7156776137dbbc7d1f7` (matches
+`SHA256SUMS.txt`). This exact file was downloaded and verified locally: silent install exit 0, installed CLI `doctor`
+all ok (hooks 49–63 ms), 14/14 UI checks against the installed app, silent uninstall exit 0 with data preserved.

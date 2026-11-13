@@ -1,6 +1,6 @@
 # Progress
 
-**Current phase:** 9 — publication (v0.1.0). Updated 2026-11-13.
+**Current phase:** v0.1.0 released 2026-11-13 — https://github.com/A67med/contextforge/releases/tag/v0.1.0
 
 | Phase | Status |
 |---|---|
@@ -12,7 +12,7 @@
 | 6 Desktop app | done — all screens on real data, 14 UI E2E checks |
 | 7 Hardening & QA | done — fmt/clippy/tests green, secret/PII scan clean |
 | 8 Packaging | done — NSIS installer built, installed, uninstalled |
-| 9 Publication | in progress |
+| 9 Publication | done — public repo, CI green, v0.1.0 installer built by CI, install-tested, published |
 
 ## Open items (need the user)
 1. **Claude Code live model checks:** run `claude` and sign in (`/login`), then `pwsh scripts/live-tests/claude.ps1`.
