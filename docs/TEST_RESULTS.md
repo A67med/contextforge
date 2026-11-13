@@ -61,3 +61,10 @@ Bug found by the UI tests and fixed: toggle switch knobs were rendered outside t
 * Hook process end-to-end (spawn → output) for an unregistered folder: 51–62 ms (`contextforge doctor`).
 * Antigravity live session (debug build): SessionStart 171–228 ms including `git status` + freshness check.
 * Startup brief for the demo project: 7 memories, ~433 tokens.
+## Dependency audit — 2026-11-13
+* `cargo audit` (RustSec): initially 3 vulnerabilities — `time` 0.3.45 (RUSTSEC-2026-0009, via tracing-appender) and
+  `quick-xml` 0.38.4 (RUSTSEC-2026-0194/0195, via plist in Tauri's macOS tooling). Fixed by updating to `time` 0.3.55
+  and `quick-xml` 0.42.0; the declared MSRV (1.85, inaccurate) had pinned the old versions and was corrected to 1.88.
+  Now: **0 vulnerabilities**, 5 informational warnings (unmaintained/unsound) in Linux-only GTK/D-Bus crates
+  pulled in by Tauri (`glib`, `zbus_names`, `zvariant*`, `proc-macro-error`) that are not compiled for Windows.
+* `npm audit --omit=dev --audit-level=high`: passes in CI.

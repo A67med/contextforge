@@ -20,5 +20,5 @@
 | No telemetry / network exposure | ✅ | stdio MCP; no network code |
 | No dangerous config overwrites | ✅ | plans verify `before`, backups, rollback, invalid files refused |
 | Production build, installer exists, binaries packaged | ✅ | NSIS installer with CLI sidecar |
-| CI passes | ⏳ | checked after push |
+| CI passes | ✅ | CI (Windows, Linux, frontend) and Security (cargo-audit, npm-audit) green on main |
 | Code signing | ❌ | installer is unsigned (disclosed in README and release notes) |
