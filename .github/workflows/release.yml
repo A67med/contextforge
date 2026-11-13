@@ -46,7 +46,7 @@ jobs:
         run: |
           gh release view $env:GITHUB_REF_NAME 2>$null; if ($LASTEXITCODE -ne 0) { gh release create $env:GITHUB_REF_NAME --draft --title "ContextForge $env:GITHUB_REF_NAME" --notes "See CHANGELOG.md" }
           gh release upload $env:GITHUB_REF_NAME (Get-ChildItem target/release/bundle/nsis/*.exe).FullName target/release/bundle/nsis/SHA256SUMS.txt --clobber
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
           name: contextforge-windows-installer
           path: target/release/bundle/nsis/
