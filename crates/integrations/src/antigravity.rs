@@ -12,7 +12,7 @@ use serde_json::{Map, Value, json};
 use crate::jsoncfg::{change_if_different, object_entry, read_object};
 use crate::plan::{Action, FileChange, InstallPlan, Scope};
 use crate::status::{ComponentState, ComponentStatus};
-use crate::{Env, Provider, Result, exe_display, is_contextforge_command, shell_command};
+use crate::{Env, Provider, Result, exe_display, is_contextforge_command};
 
 pub const HOOK_NAME: &str = "contextforge";
 pub const MCP_NAME: &str = "contextforge";
@@ -33,7 +33,7 @@ pub fn mcp_path(env: &Env, scope: &Scope) -> PathBuf {
 }
 
 fn handler(exe: &Path, event: &str, timeout: u32) -> Value {
-    json!({ "type": "command", "command": shell_command(exe, Provider::Antigravity, event), "timeout": timeout })
+    json!({ "type": "command", "command": crate::unquoted_shell_command(exe, Provider::Antigravity, event).0, "timeout": timeout })
 }
 
 /// The `"contextforge"` hook definition. Tool events use matcher groups; the others list handlers directly
@@ -54,6 +54,9 @@ pub fn mcp_definition(exe: &Path) -> Value {
 
 pub fn plan(action: Action, scope: &Scope, exe: &Path, env: &Env) -> Result<InstallPlan> {
     let mut plan = InstallPlan::new(Provider::Antigravity, action, scope.clone());
+    if action != Action::Uninstall && crate::unquoted_shell_command(exe, Provider::Antigravity, "stop").1 {
+        plan.warnings.push(format!("{} contains spaces and this volume has no 8.3 short names; Antigravity runs hooks through cmd.exe in a way that cannot start a quoted path, so its hooks will not run. Install ContextForge in a folder without spaces.", exe.display()));
+    }
 
     let hpath = hooks_path(env, scope);
     let (before, mut root) = read_object(&hpath)?;

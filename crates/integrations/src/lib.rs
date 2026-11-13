@@ -198,6 +198,44 @@ pub(crate) fn shell_command(exe: &Path, provider: Provider, event: &str) -> Stri
     format!("{quoted} hook {} {event}", provider.as_str())
 }
 
+/// Windows 8.3 short path (`C:\PROGRA~1\...`), if the volume has short names enabled.
+#[cfg(windows)]
+pub fn short_path(path: &Path) -> Option<PathBuf> {
+    use std::os::windows::ffi::{OsStrExt, OsStringExt};
+    #[link(name = "kernel32")]
+    unsafe extern "system" {
+        fn GetShortPathNameW(long: *const u16, short: *mut u16, len: u32) -> u32;
+    }
+    let wide: Vec<u16> = path.as_os_str().encode_wide().chain(std::iter::once(0)).collect();
+    let mut buf = vec![0u16; 1024];
+    // SAFETY: `wide` is NUL-terminated and `buf` has the advertised capacity.
+    let n = unsafe { GetShortPathNameW(wide.as_ptr(), buf.as_mut_ptr(), buf.len() as u32) } as usize;
+    if n == 0 || n >= buf.len() {
+        return None;
+    }
+    let p = PathBuf::from(std::ffi::OsString::from_wide(&buf[..n]));
+    (!p.to_string_lossy().contains(' ')).then_some(p)
+}
+
+#[cfg(not(windows))]
+pub fn short_path(_path: &Path) -> Option<PathBuf> {
+    None
+}
+
+/// Command line for shells that cannot run a quoted executable path (Antigravity runs hooks through cmd.exe
+/// in a way that breaks a leading quoted path — verified live). Paths with spaces use the 8.3 short form.
+/// Returns the command and whether it had to fall back to quoting (which Antigravity will not run).
+pub(crate) fn unquoted_shell_command(exe: &Path, provider: Provider, event: &str) -> (String, bool) {
+    let p = exe_display(exe);
+    if !p.contains([' ', '&', '(', ')', '^', '%', '!', '\'']) {
+        return (format!("{p} hook {} {event}", provider.as_str()), false);
+    }
+    match short_path(exe) {
+        Some(s) => (format!("{} hook {} {event}", s.display(), provider.as_str()), false),
+        None => (shell_command(exe, provider, event), true),
+    }
+}
+
 /// Does a command string / path refer to a ContextForge executable?
 pub(crate) fn is_contextforge_command(command: &str) -> bool {
     let lower = command.to_ascii_lowercase().replace('\\', "/");

@@ -213,15 +213,28 @@ impl ContextForgeServer {
 
     async fn actor(&self, peer: &Peer<RoleServer>, project_id: &str) -> Result<(Actor, Option<String>), McpError> {
         let (agent, client) = self.agent(peer);
+        tracing::debug!(client = client.as_deref().unwrap_or("(none)"), agent = agent.as_str(), "MCP client identity");
         let pid = project_id.to_string();
-        let session = self
+        let (agent, session) = self
             .with_store_blocking(move |s| {
+                if agent == AgentKind::McpClient {
+                    // Unknown client identity: attribute to the agent whose hooked session is active in this project
+                    // right now (most recent within 30 minutes), if any.
+                    let all: Vec<AgentKind> =
+                        AgentKind::ALL.iter().copied().filter(|a| a.is_agent() && *a != AgentKind::McpClient).collect();
+                    if let Ok(Some(sid)) = s.active_session_for(&pid, &all, 30)
+                        && let Ok(sess) = s.get_session(&sid)
+                    {
+                        return (sess.agent, Some(sid));
+                    }
+                    return (agent, None);
+                }
                 let candidates: Vec<AgentKind> = if agent == AgentKind::Antigravity {
                     vec![AgentKind::Antigravity, AgentKind::AntigravityCli, AgentKind::AntigravityIde, AgentKind::AntigravityApp]
                 } else {
                     vec![agent]
                 };
-                s.active_session_for(&pid, &candidates, 360).ok().flatten()
+                (agent, s.active_session_for(&pid, &candidates, 360).ok().flatten())
             })
             .await?;
         Ok((Actor::agent(agent, Origin::Mcp, session), client))
@@ -250,7 +263,12 @@ fn evidence_inputs(ev: Vec<EvidenceParam>) -> Vec<EvidenceInput> {
 }
 
 fn with_client_meta(client: Option<String>) -> Option<serde_json::Value> {
-    client.map(|c| json!({ "mcp_client": c }))
+    Some(match client {
+        Some(c) => json!({ "mcp_client": c }),
+        None => {
+            json!({ "mcp_client": null, "attribution": "client did not identify itself; attributed to the active agent session in this project, if any" })
+        }
+    })
 }
 
 #[derive(Serialize)]
