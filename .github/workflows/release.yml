@@ -20,19 +20,22 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: apps/desktop/package-lock.json
-      - name: Test
-        run: cargo test --workspace --locked
       - name: Build release CLI sidecar
         shell: pwsh
         run: |
           cargo build -p contextforge-cli --release --locked
           New-Item -ItemType Directory -Force apps/desktop/src-tauri/binaries | Out-Null
           Copy-Item target/release/contextforge.exe apps/desktop/src-tauri/binaries/contextforge-x86_64-pc-windows-msvc.exe
-      - name: Build installer
+      - name: Build frontend
         working-directory: apps/desktop
         run: |
           npm ci
-          npx tauri build
+          npm run build
+      - name: Test
+        run: cargo test --workspace --locked
+      - name: Build installer
+        working-directory: apps/desktop
+        run: npx tauri build
       - name: Checksums
         shell: pwsh
         run: |
