@@ -1,0 +1,23 @@
+[package]
+name = "contextforge-mcp"
+description = "ContextForge Model Context Protocol server (stdio)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+contextforge-core = { workspace = true, features = ["schema"] }
+rmcp = { workspace = true, features = ["server", "macros", "transport-io", "schemars"] }
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+schemars.workspace = true
+tracing.workspace = true
+chrono.workspace = true
+
+[dev-dependencies]
+rmcp = { workspace = true, features = ["client", "transport-child-process"] }
+tempfile.workspace = true

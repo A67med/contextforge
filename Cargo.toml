@@ -2,8 +2,11 @@
 resolver = "3"
 members = [
     "crates/core",
+    "crates/integrations",
+    "crates/mcp",
+    "crates/cli",
 ]
-default-members = ["crates/core"]
+default-members = ["crates/core", "crates/integrations", "crates/mcp", "crates/cli"]
 
 [workspace.package]
 version = "0.1.0"

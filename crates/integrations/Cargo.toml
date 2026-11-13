@@ -1,0 +1,22 @@
+[package]
+name = "contextforge-integrations"
+description = "ContextForge provider adapters (Claude Code, Codex, Antigravity), config installers and diagnostics"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+contextforge-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+toml_edit.workspace = true
+chrono.workspace = true
+dirs.workspace = true
+tracing.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

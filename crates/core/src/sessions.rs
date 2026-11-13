@@ -218,6 +218,19 @@ impl Store {
         Ok(rows)
     }
 
+    /// Most recent session of `agent` in a project that is still active (not ended, recent activity).
+    /// Used to attribute MCP writes to the agent session that made them.
+    pub fn active_session_for(&self, project_id: &str, agents: &[AgentKind], within_minutes: i64) -> Result<Option<String>> {
+        let cutoff = util::ts(chrono::Utc::now() - chrono::Duration::minutes(within_minutes));
+        let mut stmt = self.conn.prepare_cached(
+            "SELECT id, agent FROM sessions WHERE project_id = ?1 AND ended_at IS NULL AND last_activity_at >= ?2
+             ORDER BY last_activity_at DESC LIMIT 20",
+        )?;
+        let rows: Vec<(String, AgentKind)> =
+            stmt.query_map(params![project_id, cutoff], |r| Ok((r.get(0)?, r.get(1)?)))?.collect::<rusqlite::Result<_>>()?;
+        Ok(rows.into_iter().find(|(_, a)| agents.contains(a)).map(|(id, _)| id))
+    }
+
     pub(crate) fn injected_memory_ids(&self, session_id: &str) -> Result<HashSet<String>> {
         let mut stmt = self.conn.prepare_cached("SELECT memory_id FROM session_injections WHERE session_id = ?1")?;
         let ids = stmt.query_map([session_id], |r| r.get(0))?.collect::<rusqlite::Result<_>>()?;

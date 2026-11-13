@@ -72,10 +72,13 @@ pub(crate) fn render_item(m: &Memory, max_chars: usize, with_id: bool) -> String
         _ => {}
     }
     let mut flags = Vec::new();
-    match m.certainty {
-        Certainty::Unverified => flags.push("unverified"),
-        Certainty::Hypothesis => flags.push("hypothesis"),
-        _ => {}
+    // Certainty matters for claims (facts, notes, commands, research, bugs), not for work items.
+    if m.kind != MemoryKind::Task {
+        match m.certainty {
+            Certainty::Unverified => flags.push("unverified"),
+            Certainty::Hypothesis => flags.push("hypothesis"),
+            _ => {}
+        }
     }
     match m.freshness {
         Freshness::PotentiallyStale => flags.push("⚠ may be stale"),
