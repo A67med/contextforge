@@ -150,11 +150,16 @@ impl Env {
 
 /// Build an install / uninstall / repair plan for one provider.
 pub fn plan(provider: Provider, action: Action, scope: &Scope, exe: &Path, env: &Env) -> Result<InstallPlan> {
-    match provider {
+    let mut plan = match provider {
         Provider::Claude => claude::plan(action, scope, exe, env),
         Provider::Codex => codex::plan(action, scope, exe, env),
         Provider::Antigravity => antigravity::plan(action, scope, exe, env),
+    }?;
+    if action == Action::Uninstall {
+        // Uninstalling never creates configuration files that did not exist.
+        plan.changes.retain(|c| c.before.is_some());
     }
+    Ok(plan)
 }
 
 /// Current integration status for one provider (reads configuration files only).
