@@ -27,7 +27,7 @@ anyhow = "1.0"
 thiserror = "2.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = { version = "1.0", features = ["preserve_order"] }
-rusqlite = { version = "0.41", features = ["bundled", "backup"] }
+rusqlite = { version = "0.43", features = ["bundled", "backup"] }
 chrono = { version = "0.4", default-features = false, features = ["clock", "std", "serde"] }
 ulid = "3.0"
 regex = "1.11"
